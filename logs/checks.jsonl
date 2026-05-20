@@ -508,3 +508,4 @@
 {"timestamp": "2026-05-20T08:05:28+00:00", "result": "error", "error": "502 Server Error: Bad Gateway for url: https://mietwohnen-eg.de/mietangebote", "error_count": 1}
 {"timestamp": "2026-05-20T08:10:31+00:00", "result": "unchanged", "http_status": 200, "hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d", "previous_hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d"}
 {"timestamp": "2026-05-20T08:15:29+00:00", "result": "unchanged", "http_status": 200, "hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d", "previous_hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d"}
+{"timestamp": "2026-05-20T08:20:29+00:00", "result": "unchanged", "http_status": 200, "hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d", "previous_hash": "c2b4a02475d1d8b77d2b3059a5cd4510300edd4e73ee663afcb1bbc3f4a36f9d"}
