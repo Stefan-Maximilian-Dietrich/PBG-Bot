@@ -1,64 +1,45 @@
 #!/usr/bin/env python3
-"""Check mietwohnen-eg.de/mietangebote for changes and notify via Telegram."""
+"""Multi-Source Münchner Wohnungs-Monitor mit LLM-Extraktion + Telegram-Alerts.
+
+Pro Lauf werden alle aktiven Quellen aus config/sources.yaml geprüft:
+  fetch -> Hash-Vorfilter -> (bei Änderung) LLM-Extraktion -> Filter -> Dedup -> Telegram.
+
+Ohne LLM_API_KEY fällt der Bot auf reine Hash-Änderungserkennung zurück
+(Verhalten wie die ursprüngliche Single-Source-Version), damit er immer funktioniert.
+
+Start (aus Repo-Root):  python -m bot.check
+"""
 from __future__ import annotations
 
 import hashlib
 import json
 import os
-import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import requests
-from bs4 import BeautifulSoup
-
-URL = "https://mietwohnen-eg.de/mietangebote"
-USER_AGENT = (
-    "Mozilla/5.0 (compatible; PBG-Bot/1.0; "
-    "+https://github.com/Stefan-Maximilian-Dietrich/PBG-Bot)"
-)
-TIMEOUT_SECONDS = 30
-SELECTOR = "div.entry-content"
-ERROR_THRESHOLD = 3
+from bot.match import diff_new, filter_listings
+from bot.notify import notify_new_listings, send_telegram
+from bot.sources.base import Source, load_config
+from bot.sources.http_source import content_text, fetch_source
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = REPO_ROOT / "state"
 LOGS_DIR = REPO_ROOT / "logs"
 SNAPSHOTS_DIR = REPO_ROOT / "snapshots"
-LAST_HASH_FILE = STATE_DIR / "last_hash.txt"
-ERROR_COUNT_FILE = STATE_DIR / "error_count.txt"
 LOG_FILE = LOGS_DIR / "checks.jsonl"
+ERROR_THRESHOLD = 3
 
 
 def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def fetch_page() -> tuple[int, str]:
-    response = requests.get(
-        URL,
-        headers={"User-Agent": USER_AGENT, "Accept-Language": "de-DE,de;q=0.9,en;q=0.8"},
-        timeout=TIMEOUT_SECONDS,
-    )
-    response.raise_for_status()
-    return response.status_code, response.text
-
-
-def extract_normalized(html: str) -> str:
-    soup = BeautifulSoup(html, "html.parser")
-    element = soup.select_one(SELECTOR)
-    if element is None:
-        raise ValueError(f"Selector '{SELECTOR}' not found in HTML")
-    text = element.get_text(separator="\n", strip=True)
-    return re.sub(r"\s+", " ", text).strip()
-
-
 def hash_content(content: str) -> str:
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 
-def read_state(path: Path, default: str) -> str:
+def read_state(path: Path, default: str = "") -> str:
     if path.exists():
         return path.read_text(encoding="utf-8").strip()
     return default
@@ -75,68 +56,48 @@ def append_log(entry: dict) -> None:
         fh.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
-def save_snapshot(html: str, timestamp: str) -> str:
+def save_snapshot(html: str, timestamp: str, source_id: str) -> str:
     SNAPSHOTS_DIR.mkdir(parents=True, exist_ok=True)
     safe_ts = timestamp.replace(":", "-")
-    path = SNAPSHOTS_DIR / f"{safe_ts}.html"
+    path = SNAPSHOTS_DIR / f"{source_id}_{safe_ts}.html"
     path.write_text(html, encoding="utf-8")
     return str(path.relative_to(REPO_ROOT))
 
 
-def send_telegram(message: str) -> bool:
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
-    chat_id = os.environ.get("TELEGRAM_CHAT_ID")
-    if not token or not chat_id:
-        print(
-            "WARN: TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID not set, skipping notification",
-            file=sys.stderr,
-        )
-        return False
-    response = requests.post(
-        f"https://api.telegram.org/bot{token}/sendMessage",
-        json={"chat_id": chat_id, "text": message, "disable_web_page_preview": False},
-        timeout=15,
-    )
-    if not response.ok:
-        print(
-            f"ERROR: Telegram API returned {response.status_code}: {response.text}",
-            file=sys.stderr,
-        )
-        return False
-    return True
-
-
-def main() -> int:
+def process_source(source: Source, criteria: dict, defaults, api_key: str | None) -> None:
     timestamp = now_iso()
-    previous_hash = read_state(LAST_HASH_FILE, "")
-    previous_errors = int(read_state(ERROR_COUNT_FILE, "0") or "0")
+    hash_file = STATE_DIR / f"{source.id}_hash.txt"
+    error_file = STATE_DIR / f"{source.id}_error.txt"
+    previous_hash = read_state(hash_file, "")
+    previous_errors = int(read_state(error_file, "0") or "0")
 
     try:
-        http_status, html = fetch_page()
-        content = extract_normalized(html)
-        current_hash = hash_content(content)
-    except Exception as exc:
+        http_status, html = fetch_source(source, defaults)
+        text = content_text(html, source.selector)
+        current_hash = hash_content(text)
+    except Exception as exc:  # noqa: BLE001 - jede Quelle isoliert behandeln
         new_error_count = previous_errors + 1
         entry = {
             "timestamp": timestamp,
+            "source": source.id,
             "result": "error",
             "error": str(exc),
             "error_count": new_error_count,
         }
         append_log(entry)
-        write_state(ERROR_COUNT_FILE, str(new_error_count))
+        write_state(error_file, str(new_error_count))
         if new_error_count == ERROR_THRESHOLD:
             send_telegram(
-                f"PBG-Bot: Fehler beim Checken — {ERROR_THRESHOLD}x in Folge.\n"
-                f"Letzter Fehler: {exc}\n"
-                f"Zeit: {timestamp}"
+                f"PBG-Bot: Fehler bei {source.name} — {ERROR_THRESHOLD}x in Folge.\n"
+                f"Letzter Fehler: {exc}\nZeit: {timestamp}"
             )
         print(json.dumps(entry, ensure_ascii=False))
-        return 0
+        return
 
     if previous_errors >= ERROR_THRESHOLD:
         send_telegram(
-            f"PBG-Bot: läuft wieder normal (nach {previous_errors} Fehlern in Folge)."
+            f"PBG-Bot: {source.name} läuft wieder normal "
+            f"(nach {previous_errors} Fehlern in Folge)."
         )
 
     if previous_hash == "":
@@ -148,30 +109,73 @@ def main() -> int:
 
     entry = {
         "timestamp": timestamp,
+        "source": source.id,
         "result": result,
         "http_status": http_status,
         "hash": current_hash,
         "previous_hash": previous_hash or None,
     }
 
-    if result == "changed":
-        snapshot_rel = save_snapshot(html, timestamp)
-        entry["snapshot"] = snapshot_rel
-        send_telegram(
-            f"PBG-Bot: ÄNDERUNG auf mietwohnen-eg.de/mietangebote erkannt!\n"
-            f"Schau direkt: {URL}\n"
-            f"Erkannt: {timestamp}\n"
-            f"Snapshot im Repo: {snapshot_rel}"
-        )
-
     if result in ("changed", "initial"):
-        write_state(LAST_HASH_FILE, current_hash)
+        if api_key:
+            _handle_with_llm(source, criteria, text, html, timestamp, api_key, entry)
+        elif result == "changed":
+            # Fallback ohne LLM: bei jeder Änderung melden (außer Erstlauf).
+            entry["snapshot"] = save_snapshot(html, timestamp, source.id)
+            send_telegram(
+                f"PBG-Bot: ÄNDERUNG bei {source.name} erkannt!\n{source.url}\n"
+                f"Erkannt: {timestamp}\n(LLM aus — kein LLM_API_KEY gesetzt)"
+            )
+        write_state(hash_file, current_hash)
 
     if previous_errors > 0:
-        write_state(ERROR_COUNT_FILE, "0")
+        write_state(error_file, "0")
 
     append_log(entry)
     print(json.dumps(entry, ensure_ascii=False))
+
+
+def _handle_with_llm(
+    source: Source,
+    criteria: dict,
+    text: str,
+    html: str,
+    timestamp: str,
+    api_key: str,
+    entry: dict,
+) -> None:
+    try:
+        from bot.extract import extract_listings
+
+        listings = extract_listings(text, source.name, api_key)
+    except Exception as exc:  # noqa: BLE001 - Extraktionsfehler nicht fatal
+        entry["extract_error"] = str(exc)
+        return
+
+    matched = filter_listings(listings, criteria)
+    new, was_initial = diff_new(source.id, matched)
+    entry["listings_total"] = len(listings)
+    entry["listings_matched"] = len(matched)
+    entry["new_matches"] = 0 if was_initial else len(new)
+
+    if new and not was_initial:
+        entry["snapshot"] = save_snapshot(html, timestamp, source.id)
+        notify_new_listings(source, new)
+
+
+def main() -> int:
+    criteria, defaults, sources = load_config()
+    api_key = os.environ.get("LLM_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print(
+            "WARN: LLM_API_KEY not set — fallback to hash-only change detection",
+            file=sys.stderr,
+        )
+
+    for source in sources:
+        if not source.active:
+            continue
+        process_source(source, criteria, defaults, api_key)
     return 0
 
 

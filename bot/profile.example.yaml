@@ -1,0 +1,36 @@
+# Bewerber-Profil für automatisch generierte Bewerbungen (Stufe 2/3).
+# Kopiere diese Datei nach bot/profile.yaml und fülle sie aus.
+# bot/profile.yaml ist über .gitignore vom Repo ausgeschlossen (enthält persönliche Daten).
+
+haushalt:
+  personen: 2
+  namen:
+    - "Vorname Nachname"
+    - "Vorname Nachname (Freund/in)"
+  nichtraucher: true
+  haustiere: false
+
+einkommen:
+  netto_monatlich_gesamt: 0      # für München-Modell-/EOF-Prüfung
+  beschaeftigung:
+    - "Person 1: Job, unbefristet"
+    - "Person 2: Job, unbefristet"
+
+praeferenzen:
+  max_warmmiete: 1500
+  min_zimmer: 2
+  stadtteile_bevorzugt: []        # leer = ganz München
+  einzug_ab: "sofort"
+
+unterlagen:                       # Pfade zu PDFs (für E-Mail-Anhänge in Stufe 3)
+  schufa: ""
+  einkommensnachweise: ""
+  ausweis: ""
+
+kontakt:
+  email: ""
+  telefon: ""
+
+anschreiben_hinweise: >
+  Kurze, freundliche Selbstvorstellung als ruhiges, solventes 2-Personen-Paar,
+  langfristiges Mietinteresse, gepflegter Umgang. Vom LLM pro Angebot angepasst.
