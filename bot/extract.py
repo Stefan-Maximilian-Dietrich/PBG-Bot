@@ -6,7 +6,7 @@ Standard ist Google Gemini Flash; per Env-Variablen frei austauschbar
 
   LLM_API_KEY   API-Key des gewählten Anbieters (Pflicht)
   LLM_BASE_URL  OpenAI-kompatibler Endpoint (Default: Gemini)
-  LLM_MODEL     Modellname (Default: gemini-2.5-flash)
+  LLM_MODEL     Modellname (Default: gemini-2.0-flash; Free-Tier hat höhere RPM als 2.5-flash)
 
 Der openai-Import erfolgt lazy, damit das Modul auch ohne SDK/Key importierbar bleibt.
 
@@ -22,7 +22,7 @@ from pathlib import Path
 
 # Gemini spricht ein OpenAI-kompatibles API über diesen Endpoint.
 DEFAULT_BASE_URL = os.environ.get("LLM_BASE_URL") or "https://generativelanguage.googleapis.com/v1beta/openai/"
-DEFAULT_MODEL = os.environ.get("LLM_MODEL") or "gemini-2.5-flash"
+DEFAULT_MODEL = os.environ.get("LLM_MODEL") or "gemini-2.0-flash"
 
 SYSTEM = (
     "Du extrahierst konkrete, AKTUELL VERFÜGBARE Miet-Wohnungsangebote aus dem Text "

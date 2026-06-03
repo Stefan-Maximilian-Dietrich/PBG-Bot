@@ -155,7 +155,8 @@ def _handle_with_llm(
 
         listings = extract_listings(text, source.name, api_key)
     except Exception as exc:  # noqa: BLE001 - Extraktionsfehler nicht fatal
-        entry["extract_error"] = str(exc)
+        msg = str(exc)
+        entry["extract_error"] = "rate_limited (429)" if "429" in msg else msg[:200]
         return False
 
     matched = filter_listings(listings, criteria)
