@@ -13,9 +13,13 @@ defaults:
   timeout_seconds: 30
 
 sources:
-  # --- Standbein 1: Genossenschaften (öffentlich gelistete Angebotsseiten) ---
+  # ===================================================================
+  # Standbein 1: Genossenschaften — öffentliche Angebotsseiten (monitorbar)
+  # Recherchiert aus VMW-Mitgliederverzeichnis + Einzelprüfung (Stand 2026-06).
+  # ===================================================================
+
   - id: mietwohnen-eg
-    name: "Mietwohnen eG"
+    name: "Postbaugenossenschaft München u. Oberbayern (mietwohnen-eg)"
     pillar: genossenschaft
     url: https://mietwohnen-eg.de/mietangebote
     selector: "div.entry-content"
@@ -28,50 +32,113 @@ sources:
     active: true   # offene Genossenschaft, nimmt neue Mitglieder auf
 
   - id: progeno
-    name: "Progeno"
+    name: "Progeno eG"
     pillar: genossenschaft
     url: https://progeno.de/freie-wohnungen/
+    active: true   # offen, Aufnahme über Infoabend
+
+  - id: bauverein-haidhausen
+    name: "Bauverein München Haidhausen eG"
+    pillar: genossenschaft
+    url: https://bauverein-haidhausen.de/wohnungsangebote
+    active: true   # listet 2-3-Zi. öffentlich, Bewerbung online
+
+  - id: postbg
+    name: "PostBG München eG (Bundespostbeamte)"
+    pillar: genossenschaft
+    url: https://postbg-muenchen.de/vermietungsangebote
     active: true
 
-  # Weitere Genossenschaften: exakte "freie Wohnungen"-URL noch verifizieren,
-  # dann active: true setzen (Homepage-URLs erzeugen sonst Rausch-Treffer).
-  - id: wg-muenchen-west
-    name: "Wohnungsgenossenschaft München-West eG"
-    pillar: genossenschaft
-    url: https://wg-mw.de/
-    active: false   # TODO: Angebotsseite verlinken
   - id: vfv
     name: "Verein für Volkswohnungen eG"
     pillar: genossenschaft
-    url: https://www.vfv-muenchen.de/
-    active: false   # TODO: Angebotsseite verlinken
+    url: https://www.vfv-muenchen.de/wohnungsangebote
+    active: true   # nimmt Mitglieder auf
+
+  - id: bwv
+    name: "Beamtenwohnungsverein München eG"
+    pillar: genossenschaft
+    url: https://bwv-muenchen.de/aktuelles/wohnungsangebote
+    active: true   # nimmt Mitglieder auf
+
+  - id: vfw
+    name: "Verein für Wohnungskultur eG"
+    pillar: genossenschaft
+    url: https://vfw-muenchen.de/mietangebote/
+    active: true
+
+  - id: bg-1898
+    name: "Baugenossenschaft des Verkehrspersonals 1898 eG"
+    pillar: genossenschaft
+    url: https://www.bg-1898.de/mietangebote
+    active: true
+
+  - id: wbg1951
+    name: "WBG der Flieger- und Kriegsgeschädigten in Bayern eG"
+    pillar: genossenschaft
+    url: https://wbg1951.de/wohnungsangebote
+    active: true
+
+  - id: stadtimpuls
+    name: "Stadtimpuls eG"
+    pillar: genossenschaft
+    url: https://www.stadtimpuls-genossenschaft.de/wohnungen
+    active: true   # neue Genossenschaft, nimmt Mitglieder auf
+
+  - id: linde
+    name: "Wohngenossenschaft Linde eG (Kracherhof)"
+    pillar: genossenschaft
+    url: https://wohngenossenschaft-linde.de/der-kracherhof/freie-wohnungen-2/
+    active: true   # nimmt Mitglieder auf (EOF-gefördert)
+
   - id: hartmannshofen
     name: "Baugenossenschaft Hartmannshofen eG"
     pillar: genossenschaft
-    url: https://bg-hartmannshofen.de/
-    active: false   # TODO: Angebotsseite verlinken
+    url: https://bg-hartmannshofen.de/wohnungsangebote
+    active: true   # nimmt Nicht-Mitglieder (erst bewerben, dann Mitglied)
+
+  - id: brf
+    name: "Baugenossenschaft Reichsbahnwerk Freimann eG"
+    pillar: genossenschaft
+    url: https://brf-muenchen.de/mietangebote/
+    active: true   # ⚠️ Mitgliedschaft auf bestimmte (bahnnahe) Personen beschränkt
+
   - id: ebm
-    name: "Eisenbahner-Baugenossenschaft München-Hbf eG"
+    name: "Eisenbahner-Baugenossenschaft München-Hbf eG (ebm)"
     pillar: genossenschaft
-    url: https://ebm-muenchen.de/
-    active: false   # TODO: Angebotsseite verlinken
-  - id: awohnbau
-    name: "AWOhnbau Genossenschaft"
-    pillar: genossenschaft
-    url: https://awohnbau-genossenschaft.de/
-    active: false   # TODO: Angebotsseite verlinken
-  - id: buergerbauverein
-    name: "Bürgerbauverein München eG"
-    pillar: genossenschaft
-    url: https://www.buergerbauverein-muenchen.de/
-    active: false   # TODO: Angebotsseite verlinken
+    url: https://ebm-muenchen.de/mietangebote
+    active: true   # ⚠️ Warteliste geschlossen, aber gelistete Angebote bewerbbar
 
-  # Mitglieder-intern (Listen nur im Intranet/per Mail) -> NICHT von außen sichtbar.
-  # Aktion = Mitglied werden + Newsletter; später via email_source.py (Stufe 2).
-  # - id: wogeno          (https://www.wogeno.de/)        members-only
-  # - id: baugen1871      (https://www.baugen1871.de/)    members-only
+  - id: iwg
+    name: "IWG Isar Wohnungsbaugenossenschaft eG"
+    pillar: genossenschaft
+    url: https://www.iwg-muenchen.de/wohnungsangebote/
+    active: true   # ⚠️ nimmt derzeit keine neuen Mitglieder auf
 
-  # --- Standbein 3: Städtisch/gefördert ---
-  # Münchner Wohnen listet selbst nichts (verweist auf SOWON + Portale) -> nicht monitorbar.
-  # SOWON ist login-geschützt + Punktevergabe -> sowon_source.py (Stufe 3), nicht hier.
-  # - id: muenchner-wohnen (https://www.muenchner-wohnen.de/mieten/wohnungsangebote) active: false
+  # ===================================================================
+  # Inaktiv — geprüft, aber NICHT sinnvoll zu monitoren (Stand 2026-06):
+  # ===================================================================
+  # Mitglieder-intern / keine öffentliche Liste:
+  #   WOGENO (wogeno.de), Baugen. 1871 (baugen1871.de),
+  #   WG München-West (wg-mw.de, Listings hinter Aareon-Login)
+  # Warteliste geschlossen, keine neuen Mitglieder:
+  #   Münchner Baugenossenschaft, BG Oberwiesenfeld (bgmo.de),
+  #   BG Nord-West (bgnw-muenchen.de), Bauverein Giesing (bvgiesing.de),
+  #   WG München-Pasing (wg-pasing.de), EBG München-West, wabe.zwo (wabezwo.de)
+  #   Frauen Wohnen (frauenwohnen.de — nur Frauen mit EOF-Schein >=50 Punkte)
+  # Projekt-Genossenschaften ohne laufende Angebotsliste (Aufnahme als Mitglied
+  # für künftige Projekte, kein Monitoring): Kooperative Großstadt, Stadtbaustein,
+  #   AWOhnbau, Bürgerbauverein, Das große kleine Haus
+  # Agentur, kein eigener Bestand: GIMA München (gima-muenchen.de)
+  # Platzhalter-/keine Website: BG Obermenzing (bg-obermenzing.de)
+  #
+  # TODO Angebotsseite noch verifizieren (Bewerber-Bereich vorhanden):
+  #   BG München Süd (bmseg.de/wohnungsbewerber),
+  #   Heimstättenbaugenossenschaft Pasing (hbgpasing.de/aktuelles/wohnungsbewerbung.html),
+  #   EBG München-Ost (ebg-muenchen-ost.de), EBG Pasing (ebgpasing.de)
+
+  # ===================================================================
+  # Standbein 3: Städtisch/gefördert — SOWON (Login + Punktevergabe) und
+  # München Modell sind überwiegend administrativ -> sowon_source.py (Stufe 3).
+  # Münchner Wohnen listet selbst nichts (verweist auf SOWON + Portale).
+  # ===================================================================

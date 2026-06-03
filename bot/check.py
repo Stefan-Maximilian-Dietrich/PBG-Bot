@@ -117,8 +117,11 @@ def process_source(source: Source, criteria: dict, defaults, api_key: str | None
     }
 
     if result in ("changed", "initial"):
+        extraction_ok = True
         if api_key:
-            _handle_with_llm(source, criteria, text, html, timestamp, api_key, entry)
+            extraction_ok = _handle_with_llm(
+                source, criteria, text, html, timestamp, api_key, entry
+            )
         elif result == "changed":
             # Fallback ohne LLM: bei jeder Änderung melden (außer Erstlauf).
             entry["snapshot"] = save_snapshot(html, timestamp, source.id)
@@ -126,7 +129,10 @@ def process_source(source: Source, criteria: dict, defaults, api_key: str | None
                 f"PBG-Bot: ÄNDERUNG bei {source.name} erkannt!\n{source.url}\n"
                 f"Erkannt: {timestamp}\n(LLM aus — kein LLM_API_KEY gesetzt)"
             )
-        write_state(hash_file, current_hash)
+        # Hash nur schreiben, wenn Extraktion ok war -> transiente LLM-Fehler
+        # (z.B. Rate-Limit) werden im nächsten Lauf erneut versucht statt übersprungen.
+        if extraction_ok:
+            write_state(hash_file, current_hash)
 
     if previous_errors > 0:
         write_state(error_file, "0")
@@ -143,14 +149,14 @@ def _handle_with_llm(
     timestamp: str,
     api_key: str,
     entry: dict,
-) -> None:
+) -> bool:
     try:
         from bot.extract import extract_listings
 
         listings = extract_listings(text, source.name, api_key)
     except Exception as exc:  # noqa: BLE001 - Extraktionsfehler nicht fatal
         entry["extract_error"] = str(exc)
-        return
+        return False
 
     matched = filter_listings(listings, criteria)
     new, was_initial = diff_new(source.id, matched)
@@ -161,6 +167,7 @@ def _handle_with_llm(
     if new and not was_initial:
         entry["snapshot"] = save_snapshot(html, timestamp, source.id)
         notify_new_listings(source, new)
+    return True
 
 
 def main() -> int:
