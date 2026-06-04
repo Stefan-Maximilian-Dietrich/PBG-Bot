@@ -36,7 +36,7 @@ GitHub Actions Secrets (Repo → Settings → Secrets):
 
 Anbieter wechselbar **ohne Codeänderung** über optionale Repo-Variables (Settings → Variables):
 `LLM_BASE_URL` (OpenAI-kompatibler Endpoint) und `LLM_MODEL`. Defaults im Code:
-`https://generativelanguage.googleapis.com/v1beta/openai/` + `gemini-2.0-flash`. **Kein Anthropic.**
+`https://generativelanguage.googleapis.com/v1beta/openai/` + `gemini-2.5-flash`. **Kein Anthropic.**
 
 > Secrets via `gh secret set` ohne Trailing-Newline setzen (Pipe `--body -` verfälscht das Secret).
 
