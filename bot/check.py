@@ -155,8 +155,18 @@ def _handle_with_llm(
 
         listings = extract_listings(text, source.name, api_key)
     except Exception as exc:  # noqa: BLE001 - Extraktionsfehler nicht fatal
+        import re as _re
+
         msg = str(exc)
-        entry["extract_error"] = "rate_limited (429)" if "429" in msg else msg[:200]
+        if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+            mm = _re.search(r"limit:\s*(\d+).*?model:\s*([\w.\-]+)", msg, _re.DOTALL)
+            entry["extract_error"] = (
+                f"rate_limited (limit={mm.group(1)} model={mm.group(2)})"
+                if mm
+                else "rate_limited (429)"
+            )
+        else:
+            entry["extract_error"] = msg[:200]
         return False
 
     matched = filter_listings(listings, criteria)
