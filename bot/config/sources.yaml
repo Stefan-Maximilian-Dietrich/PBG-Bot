@@ -115,6 +115,20 @@ sources:
     url: https://www.iwg-muenchen.de/wohnungsangebote/
     active: true   # ⚠️ nimmt derzeit keine neuen Mitglieder auf
 
+  - id: koogro
+    name: "Kooperative Großstadt eG (FREIMUNDO Neufreimann)"
+    pillar: genossenschaft
+    url: https://kooperative-grossstadt.de/freimundo/
+    active: true
+    # Projekt-Seite -> meldet, sobald FREIMUNDO-Wohnungen erscheinen (aktuell keine).
+    # Authoritativer Kanal ist der KooGro-Newsletter -> zusätzlich manuell abonnieren.
+
+  # Mitbauzentrale München: NICHT als Angebots-Quelle aufgenommen — die Projektbörse
+  # listet Projekte (keine Einzelwohnungen mit Zimmer/Miete), und der eigentliche
+  # Frühwarn-Kanal ist der MONATS-NEWSLETTER (E-Mail). Auswertbar erst über die geplante
+  # E-Mail-Ingestion (Stufe 2, IMAP). Bis dahin: Newsletter manuell abonnieren
+  # (mitbauzentrale-muenchen.de/newsletter.html).
+
   # ===================================================================
   # Inaktiv — geprüft, aber NICHT sinnvoll zu monitoren (Stand 2026-06):
   # ===================================================================
@@ -127,7 +141,7 @@ sources:
   #   WG München-Pasing (wg-pasing.de), EBG München-West, wabe.zwo (wabezwo.de)
   #   Frauen Wohnen (frauenwohnen.de — nur Frauen mit EOF-Schein >=50 Punkte)
   # Projekt-Genossenschaften ohne laufende Angebotsliste (Aufnahme als Mitglied
-  # für künftige Projekte, kein Monitoring): Kooperative Großstadt, Stadtbaustein,
+  # für künftige Projekte, kein Monitoring): Stadtbaustein,
   #   AWOhnbau, Bürgerbauverein, Das große kleine Haus
   # Agentur, kein eigener Bestand: GIMA München (gima-muenchen.de)
   # Platzhalter-/keine Website: BG Obermenzing (bg-obermenzing.de)
