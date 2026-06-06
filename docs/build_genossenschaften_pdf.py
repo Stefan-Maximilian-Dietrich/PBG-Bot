@@ -114,7 +114,6 @@ overview = [
     ("WBG 1951 (Flieger/Krieg)", "Nein &ndash; Vormerkliste geschlossen", "Vergabe nur an Vorgemerkte"),
     ("brf (Reichsbahnwerk)", "Nur Bahn-Personenkreis", "Vormerkliste, lange Wartezeiten"),
     ("Beamtenwohnungsverein", "Nein &ndash; Aufnahmestopp; nur &ouml;ff. Dienst", "Nur über Wohnungszuweisung"),
-    ("Wohngen. Linde (Kracherhof)", "Bewohner: belegt (Lkr. Landsberg!)", "Aktuell alle Wohnungen belegt"),
 ]
 for n, m, v in overview:
     rows.append([Paragraph(n, CELL), Paragraph(m, CELL), Paragraph(v, CELL)])
@@ -240,19 +239,7 @@ A.append(howto(8, "Stadtbaustein eG", "gelb &ndash; frühe Phase", ORANGE, [
 ], "Download-Link des Mitgliedsantrags; Infotermine; Projekt-Zeitpläne/Wohnungszahlen; Einkommensgrenzen.",
    "stadtbaustein-muenchen.de/mitglied-werden, /kontakt; Mitbauzentrale-Projektbörse"))
 
-A.append(howto(9, "AWOhnbau Genossenschaft München Land eG", "gelb &ndash; Landkreis", ORANGE, [
-    "Satzung lesen; Formulare herunterladen: „Fragebogen für Privatpersonen“ + „Beitrittserklärung für Privatpersonen“ (awohnbau-genossenschaft.de/geld-gut-anlegen/formulare/).",
-    "Beitrittserklärung unterschreiben und einreichen → Zulassung durch den Vorstand.",
-    "Pflichtanteil (250 €) einzahlen (sofort fällig; Ratenzahlung ab 1/10 + 50 €/Monat möglich) + Eintrittsgeld (max. 250 €).",
-    "Bei Wohnungsüberlassung weitere wohnungsbezogene Pflichtanteile.",
-], [
-    ("Kosten", "Geschäftsanteil 250 € (1 Pflichtanteil beim Beitritt) + Eintrittsgeld (max. 250 €); bei Wohnung weitere Anteile."),
-    ("Einreichen", "Tel. 08102 &ndash; 98 49 820 (C. Vaclahovsky); Formulare unter /geld-gut-anlegen/formulare/."),
-    ("Aktuell", "Projekte im Landkreis München (Neubiberg/Putzbrunn), nicht im Stadtgebiet; keine freien Wohnungen genannt."),
-], "Genaue Einreich-Adresse/E-Mail für die Formulare; exaktes Eintrittsgeld; aktueller Projekt-/Bezugsstatus; Einkommensgrenzen.",
-   "awohnbau-genossenschaft.de/genossenschaft/mitglied-werden, /geld-gut-anlegen/formulare, Satzung-PDF"))
-
-A.append(howto(10, "Postbaugenossenschaft München u. Oberbayern eG (mietwohnen-eg)", "gelb &ndash; nur bei Wohnungsüberlassung", ORANGE, [
+A.append(howto(9, "Postbaugenossenschaft München u. Oberbayern eG (mietwohnen-eg)", "gelb &ndash; nur bei Wohnungsüberlassung", ORANGE, [
     "Mietangebote auf mietwohnen-eg.de/mietangebote prüfen (laufend aktualisiert).",
     "Auf eine Wohnung bewerben → Besichtigung.",
     "„Mietinteressenten-Fragebogen“ (Download unter /formulare-und-downloads) ausfüllen.",
@@ -264,7 +251,7 @@ A.append(howto(10, "Postbaugenossenschaft München u. Oberbayern eG (mietwohnen-
 ], "Genauer Bewerbungsweg (E-Mail/Post/persönlich); Anteils- und Eintrittskosten; ob Einkommensnachweis/WBS nötig.",
    "mietwohnen-eg.de/mietangebote, /formulare-und-downloads, /kontakt"))
 
-A.append(howto(11, "PostBG München eG (Bundespostbeamte)", "gelb &ndash; derzeit eingeschränkt", ORANGE, [
+A.append(howto(10, "PostBG München eG (Bundespostbeamte)", "gelb &ndash; derzeit eingeschränkt", ORANGE, [
     "Hinweis beachten: PostBG bittet Nichtmitglieder derzeit, von Wohnungsanfragen/-vormerkungen abzusehen (hohe Nachfrage).",
     "Wohnungsangebote unter /vermietungsangebote prüfen.",
     "„Bewerbungsbogen“ (Download) ausfüllen.",
@@ -420,15 +407,6 @@ D.append(coop(15, "Beamtenwohnungsverein M&uuml;nchen eG (BWV)", "Geschlossen &n
     ("Freie Wohnungen", "bwv-muenchen.de/aktuelles/wohnungsangebote (aktuell keine Angebote)"),
 ], "bwv-muenchen.de/service/interessenten; bwv-muenchen.de/ueber-uns"))
 
-D.append(coop(16, "Wohngenossenschaft Linde eG (Projekt Kracherhof)", "Belegt &ndash; und Hinweis: liegt im Landkreis Landsberg, nicht in M&uuml;nchen-Stadt", RED, [
-    ("Neue Mitglieder", "Als investierende/anlegende Mitglieder: ja („Jetzt Genoss:in werden!“). Als Bewohner:in derzeit nein: „Derzeit sind alle Wohnungen belegt.“"),
-    ("Mitglied werden", "Online-Formular (Unterscheidung „Anleger:in werden“ vs. „Bewohner:in werden“). Bewohner-Ablauf nicht detailliert öffentlich angegeben."),
-    ("Anteile / Kosten", "2 Mitgliedsanteile à 500 € = 1.000 € + einmalig 100 € Eintrittsgeld. Weitere Anteile in 500-€-Schritten; empfohlene Investition 5.000&ndash;10.000 €; angestrebte Rendite 1&ndash;4 % p.a.; keine Nachschusspflicht. (Beträge gelten für Anleger-/Mitgliedsanteile; Wohnungs-Pflichtanteile nicht angegeben.)"),
-    ("Wohnungsvergabe", "Auf Anfrage (aktuell ohnehin alles belegt)."),
-    ("Voraussetzungen", "EOF-gefördert &ndash; WBS beim Landratsamt Landsberg. Einkommensgrenzen (brutto/Jahr, Einzelperson) Stufe I 29.200 €, II 38.200 €, III 47.200 € (steigt pro Haushaltsmitglied). HINWEIS: Das Projekt liegt im Landkreis Landsberg, nicht in der Stadt München."),
-    ("Freie Wohnungen", "wohngenossenschaft-linde.de/der-kracherhof/freie-wohnungen-2/ (Stand: alle belegt)"),
-], "wohngenossenschaft-linde.de/die-genossenschaft/mitglied-werden/; .../einkommensorientierte-foerderung/"))
-
 for entry in D:
     story.extend(entry)
 
@@ -479,23 +457,14 @@ PD.append(coop(4, "Wogeno München eG", "Derzeit GESCHLOSSEN &ndash; Aufnahme nu
     ("Jetzt Interesse bekunden", "anmeldung.wogeno.de (auf Öffnung eines Aufnahmefensters warten); Tel. 089/890 5718-30, info@wogeno.de."),
 ], "wogeno.de; Aufnahmeaktion/Freiham (Mitbauzentrale-/Freiham-Recherche)"))
 
-PD.append(coop(5, "AWOhnbau Genossenschaft München Land eG", "Offen &ndash; aber Projekte im Landkreis (nicht Stadt München)", ORANGE, [
-    ("Neue Mitglieder", "Ja (aktive Mitglieder, investierende Mitglieder, Mieter)."),
-    ("Mitglied werden / Kosten", "„Aufnahme-Fragebogen“ + „Beitrittserklärung“ (PDFs) einreichen; Kontakt Tel. 08102 &ndash; 98 49 820 (C. Vaclahovsky). Konkrete Euro-Beträge (Anteil/Eintritt) auf Anfrage (nur projektbezogen „mindestens 20 Prozent Eigenkapital“; Dividende bis 4 %)."),
-    ("Aktuelle &amp; geplante Projekte", "<b>Hinweis &ndash; im Landkreis München, nicht Stadt:</b> Neubiberg 1 (Pappelstraße, bezogen 2019); Neubiberg 2 „Am Floriansanger“ (12 Wohnungen, davon 9 EOF-gefördert; Miete 6,50&ndash;13,50 €/qm; Bezug ~2024 geplant, Fertigstellung nicht offiziell bestätigt); drittes Projekt Putzbrunn (Solalindenstraße, mit der Gemeinde; Wohnungszahl unklar ~12&ndash;17)."),
-    ("Wie an eine Wohnung", "Bewerbungsphase je Projekt (Floriansanger: „voraussichtlich Anfang 2023“); Vergabe teils gemeinsam mit der Gemeinde Neubiberg."),
-    ("Voraussetzungen", "Für EOF-Projekte gelten die EOF-Einkommensgrenzen (nicht beziffert)."),
-    ("Jetzt Interesse bekunden", "awohnbau-genossenschaft.de/genossenschaft/mitglied-werden/ (Fragebogen + Beitrittserklärung)."),
-], "awohnbau-genossenschaft.de/genossenschaft/mitglied-werden/, /projekte/projekt-neubiberg/"))
-
-PD.append(coop(6, "Das große kleine Haus eG", "Geschlossen &ndash; Aufnahmestopp (Projekt läuft)", RED, [
+PD.append(coop(5, "Das große kleine Haus eG", "Geschlossen &ndash; Aufnahmestopp (Projekt läuft)", RED, [
     ("Neue Mitglieder", "Nein: „Derzeit nimmt Das große kleine Haus eG … keine neuen Mitglieder mehr auf.“ Grund: über 70 Mitglieder, nur 1 Projekt (~30 Einheiten). Ausnahmen durch den Vorstand nur für geförderte (MMG)-/Gewerbe-Einheiten oder neue Projektgruppen."),
     ("Aktuelle &amp; geplante Projekte", "Kreativquartier (Heßstraße): ca. 30 Einheiten, davon 13 Wohnungen „München Modell Genossenschaft“ (MMG) + 16 im konzeptionellen Mietwohnungsbau (KMB); Erstbezug voraussichtlich um Oktober 2026 (Grundsteinlegung 2/2025, Richtfest 2/2026)."),
     ("Wie an eine Wohnung", "Primär über Mitgliedschaft; regulärer Quereinstieg nicht vorgesehen &ndash; nur über Vorstands-Ausnahmen (v. a. MMG-Wohnungen). Verfahren auf Anfrage."),
     ("Jetzt Interesse bekunden", "Nur per E-Mail info@dasgrossekleinehaus.de (kein offenes Formular)."),
 ], "dasgrossekleinehaus.de (Mitglied werden / Impressum); ru.muenchen.de (Richtfest 2026)"))
 
-PD.append(coop(7, "wabe.zwo eG", "Derzeit geschlossen (frühe Phase)", RED, [
+PD.append(coop(6, "wabe.zwo eG", "Derzeit geschlossen (frühe Phase)", RED, [
     ("Neue Mitglieder", "Nein: „Da wir leider aktuell keine neuen Mitglieder aufnehmen können, sind auch die Infoabende vorübergehend ausgesetzt.“"),
     ("Projektstand", "Auf der Website nicht beziffert; es läuft aktiv eine Grundstückssuche („Immobilien oder Bauland von privat gesucht“) &ndash; also frühe Planungsphase."),
     ("Jetzt Interesse bekunden", "Derzeit nur passiv über die Kontaktseite (wabezwo.de/kontakt). Empfehlung: über den Mitbauzentrale-Newsletter beobachten, wann die Aufnahme wieder öffnet."),

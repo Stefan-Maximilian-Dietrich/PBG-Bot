@@ -85,11 +85,8 @@ sources:
     url: https://www.stadtimpuls-genossenschaft.de/wohnungen
     active: true   # neue Genossenschaft, nimmt Mitglieder auf
 
-  - id: linde
-    name: "Wohngenossenschaft Linde eG (Kracherhof)"
-    pillar: genossenschaft
-    url: https://wohngenossenschaft-linde.de/der-kracherhof/freie-wohnungen-2/
-    active: true   # nimmt Mitglieder auf (EOF-gefördert)
+  # Wohngenossenschaft Linde (Kracherhof) ENTFERNT: Projekt liegt in Eresing,
+  # Landkreis Landsberg — nicht Stadt München (Agenten-Check 2026-06).
 
   - id: hartmannshofen
     name: "Baugenossenschaft Hartmannshofen eG"
