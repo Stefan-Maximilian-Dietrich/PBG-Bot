@@ -57,20 +57,29 @@ def fetch_source(source: Source, defaults: Defaults) -> tuple[int, str]:
 
 
 def content_text(html: str, selector: str | None = None, max_chars: int = MAX_CONTENT_CHARS) -> str:
-    """Sichtbaren Textinhalt extrahieren. Mit Selector den Container, sonst <body>.
+    """Sichtbaren Textinhalt extrahieren. Mit Selector ALLE passenden Bereiche, sonst <body>.
 
-    Boilerplate (script/style/noscript) wird entfernt; Whitespace normalisiert.
-    Newlines bleiben erhalten, damit das LLM die Struktur (Angebotsblöcke) erkennt.
+    Boilerplate (script/style/nav/header/footer/aside/form/svg) wird entfernt, damit
+    Navigations-Rauschen das LLM nicht von den Angeboten ablenkt. Bei gesetztem Selector
+    werden ALLE Treffer zusammengefügt (mehrere Angebots-Blöcke je Quelle); ein ungültiger
+    oder leerer Selector fällt sauber auf <body> zurück.
     """
     soup = BeautifulSoup(html, "html.parser")
-    for tag in soup(["script", "style", "noscript"]):
+    for tag in soup(["script", "style", "noscript", "nav", "header", "footer", "aside", "form", "svg"]):
         tag.decompose()
 
-    element = soup.select_one(selector) if selector else None
-    if element is None:
-        element = soup.body or soup
+    parts: list[str] = []
+    if selector:
+        try:
+            elements = soup.select(selector)
+        except Exception:  # noqa: BLE001 - ungültiger CSS-Selector -> Fallback auf body
+            elements = []
+        parts = [el.get_text(separator="\n", strip=True) for el in elements]
+    if not parts:
+        body = soup.body or soup
+        parts = [body.get_text(separator="\n", strip=True)]
 
-    text = element.get_text(separator="\n", strip=True)
+    text = "\n\n".join(parts)
     text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()[:max_chars]

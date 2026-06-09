@@ -31,6 +31,7 @@ sources:
     name: "wagnis eG"
     pillar: genossenschaft
     url: https://www.wagnis.org/aktuelles/freie-wohnungen.html
+    selector: "section.ce_accordion"   # je Angebot ein Accordion; meidet langen Marketing-/Menütext
     active: true   # offene Genossenschaft, nimmt neue Mitglieder auf
 
   - id: progeno
@@ -43,6 +44,7 @@ sources:
     name: "Bauverein München Haidhausen eG"
     pillar: genossenschaft
     url: https://bauverein-haidhausen.de/wohnungsangebote
+    selector: ".mieteinheit-selector"   # Angebots-Kacheln; Detail-Links werden von hier gefolgt
     detail_pages: true   # Übersicht zeigt nur Titel; Miete/qm stehen auf den Detailseiten
     active: true   # listet 2-3-Zi. öffentlich, Bewerbung online
 
@@ -86,6 +88,7 @@ sources:
     name: "Stadtimpuls eG"
     pillar: genossenschaft
     url: https://www.stadtimpuls-genossenschaft.de/wohnungen
+    selector: "div.wixui-repeater__item"   # je Wohnung ein Repeater-Item; meidet langen Wix-Marketingtext
     active: true   # neue Genossenschaft, nimmt Mitglieder auf
 
   # Wohngenossenschaft Linde (Kracherhof) ENTFERNT: Projekt liegt in Eresing,
