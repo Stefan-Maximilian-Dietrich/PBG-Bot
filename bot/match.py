@@ -67,9 +67,11 @@ def diff_new(source_id: str, matched: list[dict]) -> tuple[list[dict], bool]:
     current_keys: set[str] = set()
     for listing in matched:
         key = listing_key(listing)
-        current_keys.add(key)
-        if key not in seen:
+        # Sowohl gegen frühere Läufe (seen) als auch INNERHALB des Laufs (current_keys)
+        # deduplizieren — manche Seiten listen dieselbe Wohnung mehrfach (z.B. Wix-Repeater).
+        if key not in seen and key not in current_keys:
             new.append(listing)
+        current_keys.add(key)
 
     seen |= current_keys
     path.parent.mkdir(parents=True, exist_ok=True)
