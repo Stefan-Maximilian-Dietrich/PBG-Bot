@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Etwas History (statt shallow depth=1), damit "git pull --rebase"
+          # beim Push-Retry einen gemeinsamen Vorfahren findet.
+          fetch-depth: 50
 
       - uses: actions/setup-python@v5
         with:
@@ -44,7 +48,19 @@ jobs:
           git add state logs snapshots
           if git diff --staged --quiet; then
             echo "No changes to commit."
-          else
-            git commit -m "chore: check $(date -u +%FT%TZ)"
-            git push
+            exit 0
           fi
+          git commit -m "chore: check $(date -u +%FT%TZ)"
+          # Push mit Retry: lief parallel ein anderer Check, ist der Push abgelehnt
+          # ("fetch first"). Dann rebasen (union-Merge fürs Log) und erneut versuchen.
+          for i in 1 2 3 4 5; do
+            if git push; then
+              echo "pushed (attempt $i)"
+              exit 0
+            fi
+            echo "push rejected — rebase & retry ($i)"
+            git pull --rebase origin main || git rebase --abort
+            sleep $((RANDOM % 4 + 1))
+          done
+          echo "push failed after retries"
+          exit 1

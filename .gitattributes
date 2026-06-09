@@ -1,0 +1,3 @@
+# logs/checks.jsonl ist append-only: bei parallelen Bot-Läufen sollen beim
+# Rebase BEIDE angehängten Blöcke erhalten bleiben statt zu kollidieren.
+logs/checks.jsonl merge=union
