@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,6 +30,9 @@ LOGS_DIR = REPO_ROOT / "logs"
 SNAPSHOTS_DIR = REPO_ROOT / "snapshots"
 LOG_FILE = LOGS_DIR / "checks.jsonl"
 ERROR_THRESHOLD = 3
+# Drosselung gegen LLM-Rate-Limits (Gemini Free-Tier ~20 Requests/Minute): kurze Pause
+# nach jedem LLM-Aufruf, damit ein Lauf mit vielen Quellen nicht ins Limit rennt.
+LLM_CALL_DELAY_SECONDS = 5
 
 
 def now_iso() -> str:
@@ -127,6 +131,7 @@ def process_source(source: Source, criteria: dict, defaults, api_key: str | None
             extraction_ok = _handle_with_llm(
                 source, criteria, llm_text, html, timestamp, api_key, entry
             )
+            time.sleep(LLM_CALL_DELAY_SECONDS)  # Rate-Limit-Schutz zwischen LLM-Aufrufen
         elif result == "changed":
             # Fallback ohne LLM: bei jeder Änderung melden (außer Erstlauf).
             entry["snapshot"] = save_snapshot(html, timestamp, source.id)
