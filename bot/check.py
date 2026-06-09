@@ -33,6 +33,9 @@ ERROR_THRESHOLD = 3
 # Drosselung gegen LLM-Rate-Limits (Gemini Free-Tier ~20 Requests/Minute): kurze Pause
 # nach jedem LLM-Aufruf, damit ein Lauf mit vielen Quellen nicht ins Limit rennt.
 LLM_CALL_DELAY_SECONDS = 5
+# Hybrid-Fallback nur ausführen, wenn der bereinigte Text substanziell ist. Bei klar
+# leeren Seiten ("keine Angebote", wenig Text) ist 0 korrekt -> kein teurer Zweit-Call.
+FALLBACK_MIN_TEXT_CHARS = 500
 
 
 def now_iso() -> str:
@@ -180,9 +183,9 @@ def _handle_with_llm(
         return False
 
     # Hybrid-Fallback: liefert das günstige Standardmodell (z. B. flash-lite) nichts,
-    # einmal mit dem stärkeren Modell nachfassen — fängt kryptische Listings (z. B. die
-    # knappen stadtimpuls-Tabellen).
-    if not listings:
+    # obwohl die Seite substanziellen Inhalt hat, einmal mit dem stärkeren Modell
+    # nachfassen — fängt kryptische Listings (z. B. die knappen stadtimpuls-Tabellen).
+    if not listings and len(text) > FALLBACK_MIN_TEXT_CHARS:
         fallback_model = os.environ.get("LLM_FALLBACK_MODEL") or "gemini-2.5-flash"
         try:
             fb = extract_listings(text, source.name, api_key, model=fallback_model)
