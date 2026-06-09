@@ -127,6 +127,48 @@ sources:
     # Projekt-Seite -> meldet, sobald FREIMUNDO-Wohnungen erscheinen (aktuell keine).
     # Authoritativer Kanal ist der KooGro-Newsletter -> zusätzlich manuell abonnieren.
 
+  # --- Runde 2 (Agenten-Recherche 2026-06): weitere statisch überwachbare Genossenschaften ---
+
+  - id: wohnturban
+    name: "wohntURBAN eG (Projekt Ponyhof, Kreativquartier)"
+    pillar: genossenschaft
+    url: https://www.wohnturban.de/wohnen-projekte/ponyhof/wohnungen/
+    selector: "div.apt-container"
+    active: true
+
+  - id: ebg-west
+    name: "EBG München-West eG (Laim/Neuhausen)"
+    pillar: genossenschaft
+    url: https://ebg-muenchen-west.de/wohnungsangebote/
+    active: true
+
+  - id: bmseg
+    name: "Baugenossenschaft München-Süd eG (Sendling)"
+    pillar: genossenschaft
+    url: https://bmseg.de/wohnungsbewerber
+    selector: "div.et_pb_text_inner"
+    active: true   # aktuell Aufnahmestopp; Statuswechsel wird erkannt
+
+  - id: hbg-pasing
+    name: "Heimstättenbaugenossenschaft Pasing eG"
+    pillar: genossenschaft
+    url: https://hbgpasing.de/aktuelles/wohnungsbewerbung.html
+    active: true   # ~300 Whg in Pasing; Seite mit Encoding-Eigenheit (Umlaute), Status trotzdem erkennbar
+
+  - id: raumfair
+    name: "raumFAIR eG (Freiham/Lochhausen)"
+    pillar: genossenschaft
+    url: https://raumfair.de/wohnungen
+    selector: "div.mod_listing-table"
+    active: true
+
+  - id: bauverein-giesing
+    name: "Bauverein Giesing eG"
+    pillar: genossenschaft
+    url: https://www.bvgiesing.de/
+    selector: "div.et_pb_text_inner"
+    active: true   # restriktive Vergabe, aber Statuswechsel statisch erkennbar
+
   # Mitbauzentrale München: NICHT als Angebots-Quelle aufgenommen — die Projektbörse
   # listet Projekte (keine Einzelwohnungen mit Zimmer/Miete), und der eigentliche
   # Frühwarn-Kanal ist der MONATS-NEWSLETTER (E-Mail). Auswertbar erst über die geplante
@@ -141,8 +183,8 @@ sources:
   #   WG München-West (wg-mw.de, Listings hinter Aareon-Login)
   # Warteliste geschlossen, keine neuen Mitglieder:
   #   Münchner Baugenossenschaft, BG Oberwiesenfeld (bgmo.de),
-  #   BG Nord-West (bgnw-muenchen.de), Bauverein Giesing (bvgiesing.de),
-  #   WG München-Pasing (wg-pasing.de), EBG München-West, wabe.zwo (wabezwo.de)
+  #   BG Nord-West (bgnw-muenchen.de),
+  #   WG München-Pasing (wg-pasing.de), wabe.zwo (wabezwo.de)
   #   Frauen Wohnen (frauenwohnen.de — nur Frauen mit EOF-Schein >=50 Punkte)
   # Projekt-Genossenschaften ohne laufende Angebotsliste (Aufnahme als Mitglied
   # für künftige Projekte, kein Monitoring): Stadtbaustein,
@@ -150,10 +192,12 @@ sources:
   # Agentur, kein eigener Bestand: GIMA München (gima-muenchen.de)
   # Platzhalter-/keine Website: BG Obermenzing (bg-obermenzing.de)
   #
-  # TODO Angebotsseite noch verifizieren (Bewerber-Bereich vorhanden):
-  #   BG München Süd (bmseg.de/wohnungsbewerber),
-  #   Heimstättenbaugenossenschaft Pasing (hbgpasing.de/aktuelles/wohnungsbewerbung.html),
-  #   EBG München-Ost (ebg-muenchen-ost.de), EBG Pasing (ebgpasing.de)
+  # Geprüft 2026-06 & ABGELEHNT (nicht statisch überwachbar / außerhalb Stadt):
+  #   EBG München-Ost (keine Angebotsstruktur), EBG Pasing (nur Visitenkarte),
+  #   BG Ober-/Unterschleißheim (JS/Immowelt-Widget), Grünwald (außerhalb Stadt),
+  #   "Gemeinsam in Garching" (Bezug erst ~2029)
+  # (BG München Süd, Heimstätten Pasing, EBG München-West, Bauverein Giesing, wohntURBAN,
+  #  raumFAIR sind seit der Agenten-Recherche 2026-06 AKTIV — siehe oben.)
 
   # ===================================================================
   # Standbein 3: Städtisch/gefördert — SOWON (Login + Punktevergabe) und
