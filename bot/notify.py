@@ -52,8 +52,9 @@ def format_listing(listing: dict, source) -> str:
         listing.get("titel") or "(ohne Titel)",
         f"{shown(listing.get('zimmer'))} Zi · {shown(listing.get('qm'), ' m²')} · {miete}",
     ]
-    if listing.get("stadtteil"):
-        lines.append(f"📍 {listing['stadtteil']}")
+    ort = " · ".join(p for p in (listing.get("stadt"), listing.get("stadtteil")) if p)
+    if ort:
+        lines.append(f"📍 {ort}")
     if listing.get("frei_ab"):
         lines.append(f"📅 frei ab {listing['frei_ab']}")
 

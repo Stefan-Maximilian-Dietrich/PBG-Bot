@@ -19,6 +19,10 @@ class Source:
     method: str = "http"
     selector: str | None = None
     active: bool = True
+    # Wenn True: nach der Uebersicht auch die verlinkten Detailseiten holen und
+    # ihren Text mit ans LLM geben (fuer Quellen, die in der Uebersicht nur Titel
+    # zeigen, Details aber erst auf Unterseiten). Siehe fetch_detail_pages().
+    detail_pages: bool = False
 
 
 @dataclass
@@ -50,6 +54,7 @@ def load_config(path: Path = CONFIG_PATH) -> tuple[dict, Defaults, list[Source]]
             method=s.get("method", "http"),
             selector=s.get("selector"),
             active=bool(s.get("active", True)),
+            detail_pages=bool(s.get("detail_pages", False)),
         )
         for s in (data.get("sources") or [])
     ]

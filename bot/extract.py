@@ -25,12 +25,16 @@ DEFAULT_BASE_URL = os.environ.get("LLM_BASE_URL") or "https://generativelanguage
 DEFAULT_MODEL = os.environ.get("LLM_MODEL") or "gemini-2.5-flash"
 
 SYSTEM = (
-    "Du extrahierst konkrete, AKTUELL VERFÜGBARE Miet-Wohnungsangebote aus dem Text "
-    "einer deutschen Webseite (Wohnungsgenossenschaft, Immobilienportal oder städtisch). "
-    "Gib ausschließlich tatsächlich aktuell angebotene Wohnungen zurück. Allgemeine Infos, "
-    "Bewerbungshinweise, bereits vergebene Wohnungen oder Texte wie 'derzeit keine freien "
-    "Wohnungen' sind KEINE Angebote — dann gib eine leere Liste zurück. Erfinde keine Werte; "
-    "unbekannte Felder = null. Antworte ausschließlich mit JSON, ohne Erklärtext."
+    "Du extrahierst Miet-Wohnungsangebote aus dem Text einer deutschen Webseite "
+    "(Wohnungsgenossenschaft, Immobilienportal oder städtisch). Ziel ist HOHER RECALL: "
+    "Liste JEDE Wohnung, die als aktuelles Miet-/Vermietungsangebot erkennbar ist — AUCH "
+    "wenn nur Adresse/Titel und Zimmerzahl angegeben sind und Miete oder Größe fehlen "
+    "(dann diese Felder = null). Im Zweifel lieber aufnehmen als weglassen. "
+    "Gib NUR DANN eine leere Liste zurück, wenn die Seite ausdrücklich sagt, dass es keine "
+    "Angebote gibt (z. B. 'derzeit keine freien Wohnungen', 'alle Wohnungen vergeben', "
+    "'keine Mietangebote vor'). KEINE Wohnungen sind: Navigations-/Menülinks, Stellplätze, "
+    "Garagen, TG-Plätze, Gewerbeflächen, allgemeine Infotexte und bereits vergebene Wohnungen. "
+    "Erfinde keine Werte; unbekannte Felder = null. Antworte ausschließlich mit JSON, ohne Erklärtext."
 )
 
 SCHEMA_HINT = (
@@ -40,7 +44,9 @@ SCHEMA_HINT = (
     '   "qm": Zahl oder null,\n'
     '   "miete_warm": Zahl oder null,   // EUR, Punkt als Dezimaltrenner\n'
     '   "miete_kalt": Zahl oder null,\n'
+    '   "stadt": "string oder null",   // z.B. Muenchen, Augsburg\n'
     '   "stadtteil": "string oder null",\n'
+    '   "in_muenchen": true/false/null,   // true = Muenchen oder direktes Umland (Lkr. Muenchen); false = klar andere Stadt; null = unbekannt\n'
     '   "frei_ab": "string oder null",\n'
     '   "url": "string oder null",\n'
     '   "braucht_wbs": true/false/null,\n'
@@ -92,7 +98,9 @@ def _normalize(listing: dict) -> dict:
         "qm": _to_num(listing.get("qm")),
         "miete_warm": _to_num(listing.get("miete_warm")),
         "miete_kalt": _to_num(listing.get("miete_kalt")),
+        "stadt": (str(listing["stadt"]).strip() or None) if listing.get("stadt") else None,
         "stadtteil": (str(listing["stadtteil"]).strip() or None) if listing.get("stadtteil") else None,
+        "in_muenchen": listing.get("in_muenchen") if isinstance(listing.get("in_muenchen"), bool) else None,
         "frei_ab": (str(listing["frei_ab"]).strip() or None) if listing.get("frei_ab") else None,
         "url": (str(listing["url"]).strip() or None) if listing.get("url") else None,
         "braucht_wbs": listing.get("braucht_wbs") if isinstance(listing.get("braucht_wbs"), bool) else None,

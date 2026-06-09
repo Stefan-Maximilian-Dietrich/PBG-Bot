@@ -21,7 +21,7 @@ from pathlib import Path
 from bot.match import diff_new, filter_listings
 from bot.notify import notify_new_listings, send_telegram
 from bot.sources.base import Source, load_config
-from bot.sources.http_source import content_text, fetch_source
+from bot.sources.http_source import content_text, fetch_detail_pages, fetch_source
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = REPO_ROOT / "state"
@@ -119,8 +119,13 @@ def process_source(source: Source, criteria: dict, defaults, api_key: str | None
     if result in ("changed", "initial"):
         extraction_ok = True
         if api_key:
+            llm_text = text
+            if source.detail_pages:
+                details = fetch_detail_pages(html, source, defaults)
+                if details:
+                    llm_text = text + "\n\n--- DETAILSEITEN ---\n\n" + "\n\n".join(details)
             extraction_ok = _handle_with_llm(
-                source, criteria, text, html, timestamp, api_key, entry
+                source, criteria, llm_text, html, timestamp, api_key, entry
             )
         elif result == "changed":
             # Fallback ohne LLM: bei jeder Änderung melden (außer Erstlauf).

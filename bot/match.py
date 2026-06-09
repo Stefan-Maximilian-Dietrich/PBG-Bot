@@ -9,14 +9,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = REPO_ROOT / "state"
 
 
-def _num(value) -> float | None:
-    if isinstance(value, bool):
-        return None
-    if isinstance(value, (int, float)):
-        return float(value)
-    return None
-
-
 def listing_key(listing: dict) -> str:
     """Stabiler Schlüssel zur Dedup. Bevorzugt die Detail-URL."""
     url = (listing.get("url") or "").strip()
@@ -31,29 +23,21 @@ def listing_key(listing: dict) -> str:
     return "sig:" + re.sub(r"\s+", " ", "|".join(parts))
 
 
-def matches(listing: dict, criteria: dict) -> bool:
-    """True, wenn das Angebot die Kriterien erfüllt.
+def matches(listing: dict) -> bool:
+    """High Recall: einziges Kriterium ist München — und nur als Negativ-Filter.
 
-    Bei UNBEKANNTEN Werten (null) wird zugunsten der Vollständigkeit eingeschlossen
-    — lieber einmal zu viel melden als einen Treffer verpassen.
+    Verworfen wird NUR, was klar außerhalb Münchens liegt (in_muenchen == False).
+    Unbekannte Lage (null) und München/Umland (true) werden immer aufgenommen.
+    Zimmerzahl und Miete filtern wir bewusst NICHT mehr — lieber eine Meldung zu viel
+    als ein verpasstes Angebot (diese Wohnungen sind selten und wertvoll).
     """
-    min_rooms = criteria.get("min_rooms")
-    zimmer = _num(listing.get("zimmer"))
-    if min_rooms is not None and zimmer is not None and zimmer < min_rooms:
-        return False
-
-    max_warm = criteria.get("max_warm_rent")
-    if max_warm is not None:
-        warm = _num(listing.get("miete_warm"))
-        kalt = _num(listing.get("miete_kalt"))
-        effective = warm if warm is not None else kalt
-        if effective is not None and effective > max_warm:
-            return False
-    return True
+    return listing.get("in_muenchen") is not False
 
 
-def filter_listings(listings: list[dict], criteria: dict) -> list[dict]:
-    return [l for l in listings if matches(l, criteria)]
+def filter_listings(listings: list[dict], criteria: dict | None = None) -> list[dict]:
+    # criteria bleibt für Aufrufer-Kompatibilität, wird aber nicht mehr genutzt:
+    # High Recall -> nur der München-Negativfilter in matches().
+    return [l for l in listings if matches(l)]
 
 
 def _seen_path(source_id: str) -> Path:

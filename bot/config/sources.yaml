@@ -3,9 +3,10 @@
 # Der freie Markt (ImmoScout/Immowelt/Kleinanzeigen/WG-Gesucht) läuft NICHT hier,
 # sondern über die flathunter-Komponente (siehe Plan, Stufe 3).
 
+# High Recall: einziges hartes Kriterium ist München (Negativ-Filter in match.py über das
+# vom LLM gesetzte Feld in_muenchen). Zimmerzahl und Miete filtern wir bewusst NICHT mehr —
+# lieber eine Meldung zu viel als ein verpasstes Angebot (diese Wohnungen sind selten & wertvoll).
 criteria:
-  min_rooms: 2
-  max_warm_rent: 1500   # Warmmiete in EUR (inkl. Nebenkosten)
   city: München
 
 defaults:
@@ -21,9 +22,10 @@ sources:
   - id: mietwohnen-eg
     name: "Postbaugenossenschaft München u. Oberbayern (mietwohnen-eg)"
     pillar: genossenschaft
-    url: https://mietwohnen-eg.de/mietangebote
-    selector: "div.entry-content"
-    active: true
+    # Die .de-Seite zeigt nur einen Platzhalter; die Angebote laufen über ein eingebettetes
+    # ImmoScout24-Portal-Widget (server-seitig gerendert, statisch abrufbar).
+    url: https://portal.immobilienscout24.de/suche/54992277
+    active: true   # listet auch Objekte außerhalb Münchens (Rosenheim, Erding ...) -> in_muenchen-Filter greift
 
   - id: wagnis-eg
     name: "wagnis eG"
@@ -41,6 +43,7 @@ sources:
     name: "Bauverein München Haidhausen eG"
     pillar: genossenschaft
     url: https://bauverein-haidhausen.de/wohnungsangebote
+    detail_pages: true   # Übersicht zeigt nur Titel; Miete/qm stehen auf den Detailseiten
     active: true   # listet 2-3-Zi. öffentlich, Bewerbung online
 
   - id: postbg
@@ -110,6 +113,7 @@ sources:
     name: "IWG Isar Wohnungsbaugenossenschaft eG"
     pillar: genossenschaft
     url: https://www.iwg-muenchen.de/wohnungsangebote/
+    selector: ".uagb-inner-tab-0"   # nur der Wohnungen-Tab; meidet den irreführenden Dauer-Platzhalter "keine Wohnungen verfügbar"
     active: true   # ⚠️ nimmt derzeit keine neuen Mitglieder auf
 
   - id: koogro
