@@ -179,6 +179,24 @@ def _handle_with_llm(
             entry["extract_error"] = msg[:200]
         return False
 
+    # Hybrid-Fallback: liefert das günstige Standardmodell (z. B. flash-lite) nichts,
+    # einmal mit dem stärkeren Modell nachfassen — fängt kryptische Listings (z. B. die
+    # knappen stadtimpuls-Tabellen).
+    if not listings:
+        fallback_model = os.environ.get("LLM_FALLBACK_MODEL") or "gemini-2.5-flash"
+        try:
+            fb = extract_listings(text, source.name, api_key, model=fallback_model)
+            if fb:
+                listings = fb
+                entry["fallback_model"] = fallback_model
+        except Exception as exc:  # noqa: BLE001 - Fallback nicht fatal
+            # Ist der Fallback (nur) rate-limited, ist "0 Treffer" unsicher -> Hash NICHT
+            # schreiben, damit der nächste Lauf es erneut versucht (selbstheilend, sobald
+            # das Tagesquota wieder frei ist).
+            if "429" in str(exc) or "RESOURCE_EXHAUSTED" in str(exc):
+                entry["fallback_error"] = "rate_limited"
+                return False
+
     matched = filter_listings(listings, criteria)
     new, was_initial = diff_new(source.id, matched)
     entry["listings_total"] = len(listings)

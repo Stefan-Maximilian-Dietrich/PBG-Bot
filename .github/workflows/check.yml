@@ -39,6 +39,8 @@ jobs:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_BASE_URL: ${{ vars.LLM_BASE_URL }}
           LLM_MODEL: ${{ vars.LLM_MODEL }}
+          # Hybrid: stärkeres Modell als Fallback, wenn LLM_MODEL nichts extrahiert (Default: gemini-2.5-flash).
+          LLM_FALLBACK_MODEL: ${{ vars.LLM_FALLBACK_MODEL }}
         run: python -m bot.check
 
       - name: Commit log + state changes
