@@ -29,7 +29,10 @@ STATE_DIR = REPO_ROOT / "state"
 LOGS_DIR = REPO_ROOT / "logs"
 SNAPSHOTS_DIR = REPO_ROOT / "snapshots"
 LOG_FILE = LOGS_DIR / "checks.jsonl"
-ERROR_THRESHOLD = 3
+# Telegram-Fehler-Alert erst nach so vielen Fehlern IN FOLGE. 6 (~30 Min bei 5-Min-Takt)
+# unterdrückt kurze Server-Hickups (z. B. transiente 5xx einer Genossenschafts-Website)
+# und meldet nur laengere Ausfaelle.
+ERROR_THRESHOLD = 6
 # Drosselung gegen LLM-Rate-Limits (Gemini Free-Tier ~20 Requests/Minute): kurze Pause
 # nach jedem LLM-Aufruf, damit ein Lauf mit vielen Quellen nicht ins Limit rennt.
 LLM_CALL_DELAY_SECONDS = 5
