@@ -10,16 +10,24 @@ STATE_DIR = REPO_ROOT / "state"
 
 
 def listing_key(listing: dict) -> str:
-    """Stabiler Schlüssel zur Dedup. Bevorzugt die Detail-URL."""
+    """Stabiler Schlüssel zur Dedup. Bevorzugt die Detail-URL.
+
+    Ohne URL: Ist die Größe (qm) bekannt, wird der Titel BEWUSST weggelassen
+    (zimmer|qm|stadtteil) — das LLM vergibt für dieselbe Wohnung mal abweichende
+    Titel ("2-Zimmer-Wohnung in Neuhausen" vs. "NHS 2 Zi"), was sonst Doppel-Alerts
+    erzeugt. Fehlt qm (z. B. nur Titel/Tabellenzeile wie "Whg 0.5"), bleibt der Titel
+    im Schlüssel, um mehrere ähnliche Wohnungen zu unterscheiden.
+    """
     url = (listing.get("url") or "").strip()
     if url:
         return "url:" + url
-    parts = [
-        str(listing.get("titel") or "").strip().lower(),
-        str(listing.get("zimmer") or ""),
-        str(listing.get("qm") or ""),
-        str(listing.get("stadtteil") or "").strip().lower(),
-    ]
+    zimmer = str(listing.get("zimmer") or "")
+    qm = str(listing.get("qm") or "")
+    stadtteil = str(listing.get("stadtteil") or "").strip().lower()
+    if qm:
+        parts = [zimmer, qm, stadtteil]
+    else:
+        parts = [str(listing.get("titel") or "").strip().lower(), zimmer, stadtteil]
     return "sig:" + re.sub(r"\s+", " ", "|".join(parts))
 
 
