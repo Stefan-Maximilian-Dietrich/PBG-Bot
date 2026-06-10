@@ -169,6 +169,25 @@ sources:
     selector: "div.et_pb_text_inner"
     active: true   # restriktive Vergabe, aber Statuswechsel statisch erkennbar
 
+  # --- Runde 3 (5-Agenten-Konsens-Suche 2026-06): statisch überwachbare Stadt-München-eGs ---
+
+  - id: bgms1909
+    name: "Baugenossenschaft München-Schwabing eG (1909)"
+    pillar: genossenschaft
+    url: https://www.bgms1909.de/
+    active: true   # keine eigene Angebotsseite; Status ("keine Neubewerbungen") auf der Startseite, per Diff erkennbar
+
+  - id: kriegersiedlung
+    name: "Baugenossenschaft Kriegersiedlung eG (Sendling)"
+    pillar: genossenschaft
+    url: https://www.kriegersiedlung.de/
+    active: true   # keine eigene Angebotsseite; Aufnahmestopp-Status auf der Startseite, per Diff erkennbar
+
+  # Konsens-Suche 2026-06 zusätzlich gefunden, bewusst NICHT aufgenommen:
+  #   MARO eG (4/5 Agenten, aber Angebote aktuell im weiteren Umland), WBG Gräfelfing (Lkr München);
+  #   tote/fehlende Websites: MZB, MKB, WBG München-Solln, Wohnungsbauverein München;
+  #   nur über Portale: Mieter-Selbsthilfe Bayern.
+
   # Mitbauzentrale München: NICHT als Angebots-Quelle aufgenommen — die Projektbörse
   # listet Projekte (keine Einzelwohnungen mit Zimmer/Miete), und der eigentliche
   # Frühwarn-Kanal ist der MONATS-NEWSLETTER (E-Mail). Auswertbar erst über die geplante
