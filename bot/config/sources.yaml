@@ -22,10 +22,16 @@ sources:
   - id: mietwohnen-eg
     name: "Postbaugenossenschaft München u. Oberbayern (mietwohnen-eg)"
     pillar: genossenschaft
-    # Die .de-Seite zeigt nur einen Platzhalter; die Angebote laufen über ein eingebettetes
-    # ImmoScout24-Portal-Widget (server-seitig gerendert, statisch abrufbar).
+    # DEAKTIVIERT 2026-06-13: keine statisch (ohne JS/Login) monitorbare Angebotsquelle.
+    # Angebote laufen NUR über das eingebettete IS24-Portal-Widget. /suche/54992277 antwortet 302 ->
+    # /ergebnisliste/, das ist eine ~2,5 KB JS-Shell (leerer <title>, keine /expose/-Links, noindex);
+    # robots.txt des Portals sperrt alle Bots (Disallow: /). requests-Fetcher bekommt 0 echte Treffer
+    # -> still "nichts frei" = falsche Sicherheit. Eigene .de-Seiten (/mietangebote, /vermietung,
+    # /uebersicht-der-objekte) enthalten KEINE statischen Angebotsdaten; www.immobilienscout24.de-
+    # Anbieterprofil ist JS-gerendert + bot-blockiert (401), IS24-Listings AGB-geschützt. Premium-
+    # Account NICHT einloggen (ToS/Account-Risiko). Reaktivieren, sobald saubere statische Quelle existiert.
     url: https://portal.immobilienscout24.de/suche/54992277
-    active: true   # listet auch Objekte außerhalb Münchens (Rosenheim, Erding ...) -> in_muenchen-Filter greift
+    active: false
 
   - id: wagnis-eg
     name: "wagnis eG"
